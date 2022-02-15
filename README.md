@@ -1,8 +1,8 @@
-# NVIDIA-Clara-Parabricks-Somatic-Variant-Calling-AWS-Blog
+# NVIDIA-Clara-Parabricks-Somatic-Variant-Calling-on-AWS
 AWS Blog (Somatic Variant Calling )
-Data download required to run NVIDIA Clara Parabricks Somatic Variant Calling Pipeline.
 
-## Download publicly available BAM files using wget
+## Data download required to run NVIDIA Clara Parabricks Somatic Variant Calling Pipeline.
+### Download publicly available BAM files using wget
 ### WGS Normal sample (50X)
 BAM: wget https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/seqc/Somatic_Mutation_WG/data/WGS/WGS_EA_N_1.bwa.dedup.bam
 #### File size: 95GB
@@ -46,7 +46,7 @@ The reference files are hosted at GDC/NCI website. (https://gdc.cancer.gov/about
 ```
   cd /mnt/disks/local
   ## Downlaod and install GATK 
-  wget https://github.com/broadinstitute/gatk/releases/download/4.1.0.0/gatk-4.1.0.0.zip
+  wget https://github.com/broadinstitute/gatk/releases/download/4.2.0.0/gatk-4.2.0.0.zip
   unzip gatk-4.2.0.0.zip
   ## Install samtools
   sudo apt install samtools
@@ -55,5 +55,5 @@ The reference files are hosted at GDC/NCI website. (https://gdc.cancer.gov/about
   ## index fasta file
   samtools faidx Refs/GRCh38.d1.vd1.fa
   ## create dictionary file from fasta: 
-  gatk-4.1.0.0/gatk CreateSequenceDictionary R=/home/ubuntu/Refs/GRCh38.d1.vd1.fa O=/home/ubuntu/Refs/GRCh38.d1.vd1.dict
+  gatk-4.2.0.0/gatk CreateSequenceDictionary R=/home/ubuntu/Refs/GRCh38.d1.vd1.fa O=/home/ubuntu/Refs/GRCh38.d1.vd1.dict
 ```
