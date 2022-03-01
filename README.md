@@ -57,3 +57,53 @@ The reference files are hosted at GDC/NCI website. (https://gdc.cancer.gov/about
   ## create dictionary file from fasta: 
   gatk-4.2.0.0/gatk CreateSequenceDictionary R=/home/ubuntu/Refs/GRCh38.d1.vd1.fa O=/home/ubuntu/Refs/GRCh38.d1.vd1.dict
 ```
+
+
+## Command line settings to run the Somatic Variant callers
+
+```
+#### Caller1: Mutect2 variant calling ($GPU=2,4,8), here we used $GPU=4
+pbrun mutectcaller --ref Refs/GRCh38.d1.vd1.fa \
+--in-tumor-bam WGS_EA_T_1.bwa.dedup.bam \
+--in-normal-bam WGS_EA_N_1.bwa.dedup.bam \
+--in-tumor-recal-file WGS_EA_T_1.bwa.dedup.recal.txt \
+--in-normal-recal-file WGS_EA_N_1.bwa.dedup.recal.txt \
+--out-vcf WGS_EA_TN-1-mutect2.vcf \
+--tumor-name WGS_EA_T_1 \
+--normal-name WGS_EA_N_1
+--num-gpus $GPU \
+
+
+#### Caller2: MuSE
+##### Step1: MuSE call
+pbrun muse --ref Refs/GRCh38.d1.vd1.fa \
+--in-tumor-bam WGS_EA_T_1.bwa.dedup.bam \
+--in-normal-bam WGS_EA_N_1.bwa.dedup.bam \
+--out-file WGS_EA_TN-1-muse.call \
+--num-threads 16 --mode call
+##### Step2: MuSe sump 
+pbrun muse --ref Refs/GRCh38.d1.vd1.fa \
+--in-callfile WGS_EA_TN-1-muse.call.MuSE.txt \
+--datatype G \
+--out-vcf WGS_EA_TN-1-muse.call.MuSE.vcf \
+--num-threads 16 --mode sump \
+--in-dbsnp Refs/dbsnp_146.hg38.vcf.gz
+
+
+#### Caller3: Somatic Sniper
+pbrun somaticsniper --ref Refs/GRCh38.d1.vd1.fa \
+--in-tumor-bam WGS_EA_T_1.bwa.dedup.bam \
+--in-normal-bam WGS_EA_N_1.bwa.dedup.bam \
+--min-mapq 1 --no-gain --no-loh --out-format vcf \
+--out-file WGS_EA_TN-1-somaticsniper.vcf \
+--num-threads 16 \
+
+
+#### Caller4: LoFreq
+pbrun lofreq --ref Refs/GRCh38.d1.vd1.fa \
+--in-tumor-bam WGS_EA_T_1.bwa.dedup.bam \
+--in-normal-bam  WGS_EA_N_1.bwa.dedup.bam \
+--output-dir pbrun_LoFreq \
+--num-threads 4 --num-gpus $GPU \
+--in-dbsnp-file Refs/dbsnp_146.hg38.vcf.gz
+```
